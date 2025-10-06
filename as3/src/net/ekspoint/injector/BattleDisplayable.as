@@ -5,10 +5,10 @@ package net.ekspoint.injector
    
    public class BattleDisplayable extends BattleUIDisplayable
    {
-      
       public var battlePage:BaseBattlePage;
-      
       public var componentName:String;
+      
+      private var _isInitialized:Boolean = false;
       
       public function BattleDisplayable()
       {
@@ -17,38 +17,84 @@ package net.ekspoint.injector
       
       public function initBattle() : void
       {
-         if(!this.battlePage.contains(this))
+         try
          {
-            this.battlePage.addChildAt(this,1);
+            if (!this.battlePage)
+            {
+               trace("[BattleDisplayable] initBattle: battlePage is null");
+               return;
+            }
+            
+            if (!this.battlePage.contains(this))
+            {
+               this.battlePage.addChildAt(this, 1);
+            }
+            
+            if (!this.battlePage.isFlashComponentRegisteredS(this.componentName))
+            {
+               this.battlePage.registerFlashComponent(this, this.componentName);
+               this._isInitialized = true;
+            }
          }
-         if(!this.battlePage.isFlashComponentRegisteredS(this.componentName))
+         catch (e:Error)
          {
-            this.battlePage.registerFlashComponent(this,this.componentName);
+            trace("[BattleDisplayable] initBattle error: " + e.message);
          }
       }
       
       public function finiBattle() : void
       {
-         if(this.battlePage.isFlashComponentRegisteredS(this.componentName))
+         try
          {
-            this.battlePage.unregisterFlashComponentS(this.componentName);
+            if (!this.battlePage)
+            {
+               return;
+            }
+            
+            if (this._isInitialized && 
+                this.battlePage.isFlashComponentRegisteredS(this.componentName))
+            {
+               this.battlePage.unregisterFlashComponentS(this.componentName);
+               this._isInitialized = false;
+            }
+            
+            if (this.battlePage.contains(this))
+            {
+               this.battlePage.removeChild(this);
+            }
          }
-         if(this.battlePage.contains(this))
+         catch (e:Error)
          {
-            this.battlePage.removeChild(this);
+            trace("[BattleDisplayable] finiBattle error: " + e.message);
          }
       }
       
       override protected function onPopulate() : void
       {
-         super.onPopulate();
+         try
+         {
+            super.onPopulate();
+         }
+         catch (e:Error)
+         {
+            trace("[BattleDisplayable] onPopulate error: " + e.message);
+         }
       }
       
       override protected function onDispose() : void
       {
-         this.finiBattle();
-         super.onDispose();
+         try
+         {
+            this.finiBattle();
+            this.battlePage = null;
+            this.componentName = null;
+            
+            super.onDispose();
+         }
+         catch (e:Error)
+         {
+            trace("[BattleDisplayable] onDispose error: " + e.message);
+         }
       }
    }
 }
-

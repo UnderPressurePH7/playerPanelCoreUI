@@ -1,9 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: playerPanelCoreUI
-# Compiled at: 2022-06-01 20:37:14
+# -*- coding: utf-8 -*-
 import copy
 import Event
 import BigWorld
+import logging
 from Avatar import PlayerAvatar
 from helpers import getShortClientVersion
 from gui.shared.personality import ServicesLocator
@@ -18,45 +17,89 @@ from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPICompone
 from gui.Scaleform.daapi.view.meta.PlayersPanelMeta import PlayersPanelMeta
 from gui.Scaleform.daapi.view.battle.shared.stats_exchange.stats_ctrl import BattleStatisticsDataController
 
+logger = logging.getLogger(__name__)
+
 class PlayerPanelCoreUIMeta(BaseDAAPIComponent):
 
     def _populate(self):
-        super(PlayerPanelCoreUIMeta, self)._populate()
-        g_events._populate(self)
+        try:
+            super(PlayerPanelCoreUIMeta, self)._populate()
+            g_events._populate(self)
+        except Exception:
+            logger.error('[PlayerPanelCore] Error during populate', exc_info=True)
 
     def _dispose(self):
-        super(PlayerPanelCoreUIMeta, self)._dispose()
-        g_events._dispose(self)
+        try:
+            super(PlayerPanelCoreUIMeta, self)._dispose()
+            g_events._dispose(self)
+        except Exception:
+            logger.error('[PlayerPanelCore] Error during dispose', exc_info=True)
 
     def flashLogS(self, *data):
-        print 'PlayerPanelCoreMeta', data
+        logger.debug('[PlayerPanelCore] Flash: %s', data)
 
     def as_createS(self, container, config):
-        return self.flashObject.as_create(container, config) if self._isDAAPIInited() else None
+        try:
+            return self.flashObject.as_create(container, config) if self._isDAAPIInited() else None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in as_createS for container: %s', container, exc_info=True)
+            return None
 
     def as_updateS(self, container, data):
-        return self.flashObject.as_update(container, data) if self._isDAAPIInited() else None
+        try:
+            return self.flashObject.as_update(container, data) if self._isDAAPIInited() else None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in as_updateS for container: %s', container, exc_info=True)
+            return None
 
     def as_deleteS(self, container):
-        return self.flashObject.as_delete(container) if self._isDAAPIInited() else None
+        try:
+            return self.flashObject.as_delete(container) if self._isDAAPIInited() else None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in as_deleteS for container: %s', container, exc_info=True)
+            return None
 
     def as_updatePositionS(self, container, vehicleID):
-        return self.flashObject.as_updatePosition(container, vehicleID) if self._isDAAPIInited() else None
+        try:
+            return self.flashObject.as_updatePosition(container, vehicleID) if self._isDAAPIInited() else None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in as_updatePositionS', exc_info=True)
+            return None
 
     def as_shadowListItemS(self, shadow):
-        return self.flashObject.as_shadowListItem(shadow) if self._isDAAPIInited() else None
+        try:
+            return self.flashObject.as_shadowListItem(shadow) if self._isDAAPIInited() else None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in as_shadowListItemS', exc_info=True)
+            return None
 
     def as_extendedSettingS(self, container, vehicleID):
-        return self.flashObject.extendedSetting(container, vehicleID) if self._isDAAPIInited() else None
+        try:
+            return self.flashObject.extendedSetting(container, vehicleID) if self._isDAAPIInited() else None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in as_extendedSettingS', exc_info=True)
+            return None
 
     def as_getPPListItemS(self, vehicleID):
-        return self.flashObject.as_getPPListItem(vehicleID) if self._isDAAPIInited() else None
+        try:
+            return self.flashObject.as_getPPListItem(vehicleID) if self._isDAAPIInited() else None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in as_getPPListItemS for vehicleID: %s', vehicleID, exc_info=True)
+            return None
 
     def as_hasOwnPropertyS(self, container):
-        return self.flashObject.as_hasOwnProperty(container) if self._isDAAPIInited() else None
+        try:
+            return self.flashObject.as_hasOwnProperty(container) if self._isDAAPIInited() else None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in as_hasOwnPropertyS', exc_info=True)
+            return False
 
     def as_vehicleIconColorS(self, vehicleID, color):
-        return self.flashObject.as_vehicleIconColor(vehicleID, color) if self._isDAAPIInited() else None
+        try:
+            return self.flashObject.as_vehicleIconColor(vehicleID, color) if self._isDAAPIInited() else None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in as_vehicleIconColorS', exc_info=True)
+            return None
 
 
 class Events(object):
@@ -67,135 +110,223 @@ class Events(object):
         self.componentUI = None
         self.onUIReady = Event.Event()
         self.updateMode = Event.Event()
-        handleNextMode = PlayersPanel._handleNextMode
-        as_setPanelModeS = PlayersPanelMeta.as_setPanelModeS
-        _as_setPanelModeS = PlayersPanel.as_setPanelModeS
-        handleShowExtendedInfo = PlayersPanel._PlayersPanel__handleShowExtendedInfo
-        _tryToSetPanelModeByMouse = PlayersPanel.tryToSetPanelModeByMouse
-        tryToSetPanelModeByMouse = PlayersPanelMeta.tryToSetPanelModeByMouse
-        updateVehiclesInfo = BattleStatisticsDataController.updateVehiclesInfo
-        updateVehiclesStats = BattleStatisticsDataController.updateVehiclesStats
-        setInitialMode = PlayersPanel.setInitialMode
-        setLargeMode = PlayersPanel.setLargeMode
-        PlayersPanel.setInitialMode = lambda base_self: self.setInitialMode(setInitialMode, base_self)
-        PlayersPanel.setLargeMode = lambda base_self: self.setInitialMode(setLargeMode, base_self)
-        PlayersPanel._handleNextMode = lambda base_self, value: self.setPanelMode(handleNextMode, base_self, value)
-        PlayersPanel._PlayersPanel__handleShowExtendedInfo = lambda base_self, value: self.setPanelMode(handleShowExtendedInfo, base_self, value)
-        PlayersPanelMeta.as_setPanelModeS = lambda base_self, value: self.setPanelMode(as_setPanelModeS, base_self, value)
-        PlayersPanel.as_setPanelModeS = lambda base_self, value: self.setPanelMode(_as_setPanelModeS, base_self, value)
-        PlayersPanel.tryToSetPanelModeByMouse = lambda base_self, value: self.setPanelMode(_tryToSetPanelModeByMouse, base_self, value)
-        PlayersPanelMeta.tryToSetPanelModeByMouse = lambda base_self, value: self.setPanelMode(tryToSetPanelModeByMouse, base_self, value)
-        BattleStatisticsDataController.updateVehiclesInfo = lambda base_self, updated, arenaDP: self.updateVehicles(updateVehiclesInfo, base_self, updated, arenaDP)
-        BattleStatisticsDataController.updateVehiclesStats = lambda base_self, updated, arenaDP: self.updateVehicles(updateVehiclesStats, base_self, updated, arenaDP)
-        self.config = {'child': 'vehicleTF',
-         'holder': 'vehicleIcon',
-         'left': {'x': 0,
-                  'y': 0,
-                  'align': 'left',
-                  'height': 24,
-                  'width': 100},
-         'right': {'x': 0,
-                   'y': 0,
-                   'align': 'right',
-                   'height': 24,
-                   'width': 100},
-         'shadow': {'distance': 0,
-                    'angle': 90,
-                    'color': '#000000',
-                    'alpha': 100,
-                    'size': 2,
-                    'strength': 200}}
-        print '[NOTE] Loading mod: playerPanelCoreUI, [v.1.0.1 WOT: {}] by Ekspoint'.format(getShortClientVersion().replace('v.', '').strip())
-        return
+        
+        self._original_methods = {}
+        self._patchMethods()
+        
+        self.config = {
+            'child': 'vehicleTF',
+            'holder': 'vehicleIcon',
+            'left': {'x': 0, 'y': 0, 'align': 'left', 'height': 24, 'width': 100},
+            'right': {'x': 0, 'y': 0, 'align': 'right', 'height': 24, 'width': 100},
+            'shadow': {'distance': 0, 'angle': 90, 'color': '#000000', 'alpha': 100, 'size': 2, 'strength': 200}
+        }
+        
+        logger.info('[PlayerPanelCore] Loading mod: playerPanelCoreUI, [v.1.0.3 WOT: %s] by Ekspoint modified by Under', 
+                    getShortClientVersion().replace('v.', '').strip())
+
+    def _patchMethods(self):
+        try:
+            handleNextMode = PlayersPanel._handleNextMode
+            as_setPanelModeS = PlayersPanelMeta.as_setPanelModeS
+            _as_setPanelModeS = PlayersPanel.as_setPanelModeS
+            handleShowExtendedInfo = PlayersPanel._PlayersPanel__handleShowExtendedInfo
+            _tryToSetPanelModeByMouse = PlayersPanel.tryToSetPanelModeByMouse
+            tryToSetPanelModeByMouse = PlayersPanelMeta.tryToSetPanelModeByMouse
+            updateVehiclesInfo = BattleStatisticsDataController.updateVehiclesInfo
+            updateVehiclesStats = BattleStatisticsDataController.updateVehiclesStats
+            setInitialMode = PlayersPanel.setInitialMode
+            setLargeMode = PlayersPanel.setLargeMode
+            
+            PlayersPanel.setInitialMode = lambda base_self: self.setInitialMode(setInitialMode, base_self)
+            PlayersPanel.setLargeMode = lambda base_self: self.setInitialMode(setLargeMode, base_self)
+            PlayersPanel._handleNextMode = lambda base_self, value: self.setPanelMode(handleNextMode, base_self, value)
+            PlayersPanel._PlayersPanel__handleShowExtendedInfo = lambda base_self, value: self.setPanelMode(handleShowExtendedInfo, base_self, value)
+            PlayersPanelMeta.as_setPanelModeS = lambda base_self, value: self.setPanelMode(as_setPanelModeS, base_self, value)
+            PlayersPanel.as_setPanelModeS = lambda base_self, value: self.setPanelMode(_as_setPanelModeS, base_self, value)
+            PlayersPanel.tryToSetPanelModeByMouse = lambda base_self, value: self.setPanelMode(_tryToSetPanelModeByMouse, base_self, value)
+            PlayersPanelMeta.tryToSetPanelModeByMouse = lambda base_self, value: self.setPanelMode(tryToSetPanelModeByMouse, base_self, value)
+            BattleStatisticsDataController.updateVehiclesInfo = lambda base_self, updated, arenaDP: self.updateVehicles(updateVehiclesInfo, base_self, updated, arenaDP)
+            BattleStatisticsDataController.updateVehiclesStats = lambda base_self, updated, arenaDP: self.updateVehicles(updateVehiclesStats, base_self, updated, arenaDP)
+            
+            logger.info('[PlayerPanelCore] Methods patched successfully')
+        except Exception:
+            logger.error('[PlayerPanelCore] Error during method patching', exc_info=True)
+            raise
 
     def updateVehicles(self, base, base_self, updated, arenaDP):
-        base(base_self, updated, arenaDP)
-        if self.impl:
-            self.updateMode()
+        try:
+            base(base_self, updated, arenaDP)
+            if self.impl:
+                self.updateMode()
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in updateVehicles', exc_info=True)
 
     def setInitialMode(self, base, base_self):
-        base(base_self)
-        if self.impl:
-            self.updateMode()
+        try:
+            base(base_self)
+            if self.impl:
+                self.updateMode()
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in setInitialMode', exc_info=True)
 
     def setPanelMode(self, base, base_self, value):
-        base(base_self, value)
-        if self.impl:
-            self.updateMode()
+        try:
+            base(base_self, value)
+            if self.impl:
+                self.updateMode()
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in setPanelMode', exc_info=True)
 
     def _populate(self, base_self):
-        self.viewLoad = True
-        self.componentUI = base_self
-        self.onUIReady(self, 'playerPanelCoreUI', base_self)
+        try:
+            self.viewLoad = True
+            self.componentUI = base_self
+            self.onUIReady(self, 'playerPanelCoreUI', base_self)
+            logger.debug('[PlayerPanelCore] Populate completed')
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in _populate', exc_info=True)
 
     def _dispose(self, base_self):
-        self.impl = False
-        self.viewLoad = False
-        self.componentUI = None
-        return
+        try:
+            self.impl = False
+            self.viewLoad = False
+            self.componentUI = None
+            logger.debug('[PlayerPanelCore] Dispose completed')
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in _dispose', exc_info=True)
 
     def smart_update(self, dict1, dict2):
-        changed = False
-        for k in dict1:
-            v = dict2.get(k)
-            if isinstance(v, dict):
-                changed |= self.smart_update(dict1[k], v)
-            if v is not None:
-                if isinstance(v, unicode):
-                    v = v.encode('utf-8')
-                changed |= dict1[k] != v
-                dict1[k] = v
-
-        return changed
+        try:
+            changed = False
+            for k in dict1:
+                v = dict2.get(k)
+                if isinstance(v, dict):
+                    changed |= self.smart_update(dict1[k], v)
+                if v is not None:
+                    if isinstance(v, unicode):
+                        v = v.encode('utf-8')
+                    changed |= dict1[k] != v
+                    dict1[k] = v
+            return changed
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in smart_update', exc_info=True)
+            return False
 
     def create(self, container, config=None):
-        if self.componentUI:
-            conf = copy.deepcopy(self.config)
-            self.smart_update(conf, config if config else self.config)
-            return self.componentUI.as_createS(container, conf)
-        else:
+        try:
+            if not container:
+                logger.warning('[PlayerPanelCore] create called with empty container')
+                return None
+            
+            if self.componentUI:
+                conf = copy.deepcopy(self.config)
+                self.smart_update(conf, config if config else self.config)
+                return self.componentUI.as_createS(container, conf)
+            else:
+                logger.warning('[PlayerPanelCore] create called but componentUI is None')
+                return None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in create for container: %s', container, exc_info=True)
             return None
 
     def update(self, container, data):
-        if self.componentUI:
-            data['text'] = data['text'].replace('$IMELanguageBar', '$FieldFont')
-            return self.componentUI.as_updateS(container, data)
-        else:
+        try:
+            if not container or not data:
+                logger.warning('[PlayerPanelCore] update called with invalid params')
+                return None
+            
+            if self.componentUI:
+                if 'text' in data:
+                    data['text'] = data['text'].replace('$IMELanguageBar', '$FieldFont')
+                return self.componentUI.as_updateS(container, data)
+            else:
+                logger.warning('[PlayerPanelCore] update called but componentUI is None')
+                return None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in update', exc_info=True)
             return None
 
     def delete(self, container):
-        return self.componentUI.as_deleteS(container) if self.componentUI else None
+        try:
+            if not container:
+                logger.warning('[PlayerPanelCore] delete called with empty container')
+                return None
+            return self.componentUI.as_deleteS(container) if self.componentUI else None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in delete', exc_info=True)
+            return None
 
     def shadowListItem(self, shadow):
-        return self.componentUI.as_shadowListItemS(shadow) if self.componentUI else None
+        try:
+            return self.componentUI.as_shadowListItemS(shadow) if self.componentUI else None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in shadowListItem', exc_info=True)
+            return None
 
     def hasOwnProperty(self, container):
-        return self.componentUI.as_hasOwnPropertyS(container) if self.componentUI else None
+        try:
+            return self.componentUI.as_hasOwnPropertyS(container) if self.componentUI else False
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in hasOwnProperty', exc_info=True)
+            return False
 
     def vehicleIconColor(self, vehicleID, color):
-        return self.componentUI.as_vehicleIconColorS(vehicleID, color) if self.componentUI else None
+        try:
+            if not vehicleID or not color:
+                logger.warning('[PlayerPanelCore] vehicleIconColor called with invalid params')
+                return None
+            return self.componentUI.as_vehicleIconColorS(vehicleID, color) if self.componentUI else None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in vehicleIconColor', exc_info=True)
+            return None
 
     def extendedSetting(self, container, vehicleID):
-        return self.componentUI.as_extendedSettingS(container, vehicleID) if self.componentUI else None
+        try:
+            return self.componentUI.as_extendedSettingS(container, vehicleID) if self.componentUI else None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in extendedSetting', exc_info=True)
+            return None
 
     def getPPListItem(self, vehicleID):
-        return self.componentUI.as_getPPListItemS(vehicleID) if self.componentUI else None
+        try:
+            return self.componentUI.as_getPPListItemS(vehicleID) if self.componentUI else None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in getPPListItem', exc_info=True)
+            return None
 
     def updatePosition(self, container, vehicleID):
-        return self.componentUI.as_updatePositionS(container, vehicleID) if self.componentUI else None
+        try:
+            return self.componentUI.as_updatePositionS(container, vehicleID) if self.componentUI else None
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in updatePosition', exc_info=True)
+            return None
 
     def onComponentRegistered(self, event):
-        if event.alias == BATTLE_VIEW_ALIASES.PLAYERS_PANEL:
-            if BigWorld.player().guiSessionProvider.arenaVisitor.gui.isEpicRandomBattle():
-                return
-            if BigWorld.player().guiSessionProvider.arenaVisitor.gui.isBattleRoyale():
-                return
-            self.impl = True
-            ServicesLocator.appLoader.getDefBattleApp().loadView(SFViewLoadParams('playerPanelCoreUI', 'playerPanelCoreUI'), {})
+        try:
+            if event.alias == BATTLE_VIEW_ALIASES.PLAYERS_PANEL:
+                if BigWorld.player().guiSessionProvider.arenaVisitor.gui.isEpicRandomBattle():
+                    logger.debug('[PlayerPanelCore] Skipping Epic Random Battle')
+                    return
+                if BigWorld.player().guiSessionProvider.arenaVisitor.gui.isBattleRoyale():
+                    logger.debug('[PlayerPanelCore] Skipping Battle Royale')
+                    return
+                
+                self.impl = True
+                ServicesLocator.appLoader.getDefBattleApp().loadView(
+                    SFViewLoadParams('playerPanelCoreUI', 'playerPanelCoreUI'), {}
+                )
+                logger.info('[PlayerPanelCore] Component registered and view loaded')
+        except Exception:
+            logger.error('[PlayerPanelCore] Error in onComponentRegistered', exc_info=True)
 
 
 if not g_entitiesFactories.getSettings('playerPanelCoreUI'):
-    g_events = Events()
-    g_entitiesFactories.addSettings(ViewSettings('playerPanelCoreUI', View, 'playerPanelCoreUI.swf', WindowLayer.WINDOW, None, ScopeTemplates.GLOBAL_SCOPE))
-    g_entitiesFactories.addSettings(ComponentSettings('playerPanelCore', PlayerPanelCoreUIMeta, ScopeTemplates.DEFAULT_SCOPE))
-    g_eventBus.addListener(events.ComponentEvent.COMPONENT_REGISTERED, g_events.onComponentRegistered, scope=EVENT_BUS_SCOPE.GLOBAL)
+    try:
+        g_events = Events()
+        g_entitiesFactories.addSettings(ViewSettings('playerPanelCoreUI', View, 'playerPanelCoreUI.swf', WindowLayer.WINDOW, None, ScopeTemplates.GLOBAL_SCOPE))
+        g_entitiesFactories.addSettings(ComponentSettings('playerPanelCore', PlayerPanelCoreUIMeta, ScopeTemplates.DEFAULT_SCOPE))
+        g_eventBus.addListener(events.ComponentEvent.COMPONENT_REGISTERED, g_events.onComponentRegistered, scope=EVENT_BUS_SCOPE.GLOBAL)
+        logger.info('[PlayerPanelCore] Mod initialized successfully')
+    except Exception:
+        logger.error('[PlayerPanelCore] Fatal error during mod initialization', exc_info=True)
