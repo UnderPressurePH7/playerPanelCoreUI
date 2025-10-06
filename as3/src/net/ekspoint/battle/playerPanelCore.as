@@ -65,15 +65,11 @@ package net.ekspoint.battle
       
       private function returnTextFieldToPool(tf:TextField) : void
       {
-         if (!tf)
-         {
-            return;
-         }
+         if (!tf) return;
 
          tf.text = "";
          tf.htmlText = "";
          tf.filters = null;
-         
          if (tf.parent)
          {
             tf.parent.removeChild(tf);
@@ -128,20 +124,19 @@ package net.ekspoint.battle
       
       public function as_hasOwnProperty(param1:String) : Boolean
       {
-         if (!param1)
-         {
-            return false;
-         }
+         if (!param1) return false;
          
+         var result:Boolean = false;
          try
          {
-            return this.hasOwnPropertyComponent(param1);
+            result = this.hasOwnPropertyComponent(param1);
          }
          catch (e:Error)
          {
             this.logError("as_hasOwnProperty error: " + e.message);
-            return false;
+            result = false;
          }
+         return result;
       }
       
       public function as_delete(param1:String) : void
@@ -197,100 +192,93 @@ package net.ekspoint.battle
       
       private function getListItem(param1:*, param2:Number) : *
       {
-         if (!param1 || !param1._items)
-         {
-            return null;
-         }
+         if (!param1 || !param1._items) return null;
          
+         var result:* = null;
          try
          {
             var _loc3_:int = int(param1._items.length);
-            var _loc4_:int = 0;
-            while(_loc4_ < _loc3_)
+            for (var _loc4_:int = 0; _loc4_ < _loc3_; _loc4_++)
             {
                if (param1._items[_loc4_].vehicleID == param2)
                {
-                  return param1._items[_loc4_]._listItem;
+                  result = param1._items[_loc4_]._listItem;
+                  break;
                }
-               _loc4_++;
             }
          }
          catch (e:Error)
          {
             this.logError("getListItem error: " + e.message);
+            result = null;
          }
-         
-         return null;
+         return result;
       }
       
       public function as_getPPListItem(param1:int) : *
       {
+         var result:* = null;
          try
          {
-            var _loc2_:* = (this.battlePage as BattlePage).playersPanel.listRight;
-            if (!_loc2_.getHolderByVehicleID(int(param1)))
+            var panel:* = (this.battlePage as BattlePage).playersPanel.listRight;
+            if (!panel || !panel.getHolderByVehicleID(int(param1)))
             {
-               _loc2_ = (this.battlePage as BattlePage).playersPanel.listLeft;
-               return this.getListItem(_loc2_, param1);
+               panel = (this.battlePage as BattlePage).playersPanel.listLeft;
             }
-            return this.getListItem(_loc2_, param1);
+            result = this.getListItem(panel, param1);
          }
          catch (e:Error)
          {
             this.logError("as_getPPListItem error: " + e.message);
-            return null;
+            result = null;
          }
+         return result;
       }
       
       private function isRightP(param1:int) : Boolean
       {
+         var result:Boolean = false;
          try
          {
-            var _loc2_:* = (this.battlePage as BattlePage).playersPanel.listRight;
-            if (!_loc2_.getHolderByVehicleID(int(param1)))
+            var panel:* = (this.battlePage as BattlePage).playersPanel.listRight;
+            if (panel && panel.getHolderByVehicleID(int(param1)))
             {
-               return false;
+               result = true;
             }
-            return true;
          }
          catch (e:Error)
          {
             this.logError("isRightP error: " + e.message);
-            return false;
+            result = false;
          }
+         return result;
       }
       
       public function as_updatePosition(param1:String, param2:int) : void
       {
-         if (!param1)
-         {
-            return;
-         }
+         if (!param1) return;
          
          try
          {
-            var _loc3_:* = undefined;
-            var _loc4_:Object = null;
-            var _loc5_:Boolean = this.isRightP(param2);
+            var listItem:* = undefined;
+            var config:Object = null;
+            var isRight:Boolean = this.isRightP(param2);
             
             if (!this.textFields[param1].hasOwnProperty(int(param2)))
             {
                this.createPpanelTF(param1, int(param2));
             }
             
-            _loc3_ = this.as_getPPListItem(int(param2));
-            if (!_loc3_)
-            {
-               return;
-            }
+            listItem = this.as_getPPListItem(int(param2));
+            if (!listItem) return;
             
-            _loc4_ = this.configs[param1][_loc5_ ? "right" : "left"];
+            config = this.configs[param1][isRight ? "right" : "left"];
             
             var tf:TextField = this.textFields[param1][param2];
             if (tf)
             {
-               tf.x = _loc3_[this.configs[param1]["holder"]].x + _loc4_.x;
-               tf.y = _loc3_[this.configs[param1]["holder"]].y + _loc4_.y;
+               tf.x = listItem[this.configs[param1]["holder"]].x + config.x;
+               tf.y = listItem[this.configs[param1]["holder"]].y + config.y;
             }
          }
          catch (e:Error)
@@ -301,60 +289,61 @@ package net.ekspoint.battle
       
       public function as_shadowListItem(param1:Object) : *
       {
+         var result:* = null;
          try
          {
-            if (!param1)
+            if (param1)
             {
-               return null;
+               result = Utils.getDropShadowFilter(
+                  param1.distance, param1.angle, param1.color, 
+                  param1.alpha, param1.size, param1.strength
+               );
             }
-            return Utils.getDropShadowFilter(
-               param1.distance, param1.angle, param1.color, 
-               param1.alpha, param1.size, param1.strength
-            );
          }
          catch (e:Error)
          {
             this.logError("as_shadowListItem error: " + e.message);
-            return null;
+            result = null;
          }
+         return result;
       }
       
       public function extendedSetting(param1:String, param2:int) : *
       {
+         var result:* = null;
          try
          {
             if (!this.textFields[param1].hasOwnProperty(int(param2)))
             {
                this.createPpanelTF(param1, int(param2));
             }
-            return this.textFields[param1][param2];
+            result = this.textFields[param1][param2];
          }
          catch (e:Error)
          {
             this.logError("extendedSetting error: " + e.message);
-            return null;
+            result = null;
          }
+         return result;
       }
       
       public function as_vehicleIconColor(param1:int, param2:String) : void
       {
          try
          {
-            var _loc4_:BattleAtlasSprite = null;
-            var _loc3_:* = undefined;
+            var vehicleIcon:BattleAtlasSprite = null;
+            var listItem:* = this.as_getPPListItem(int(param1));
             
-            _loc3_ = this.as_getPPListItem(int(param1));
-            if (_loc3_)
+            if (listItem)
             {
-               _loc4_ = _loc3_.vehicleIcon;
-               if (_loc4_)
+               vehicleIcon = listItem.vehicleIcon;
+               if (vehicleIcon)
                {
-                  _loc4_["playerPanelCoreUI"] = {"color": Utils.colorConvert(param2)};
-                  
-                  if (!_loc4_.hasEventListener(Event.RENDER))
+                  vehicleIcon["playerPanelCoreUI"] = {"color": Utils.colorConvert(param2)};
+                  if (!vehicleIcon.hasEventListener(Event.RENDER))
                   {
-                     _loc4_.addEventListener(Event.RENDER, this.onRenderHendle);
-                     this.eventListeners.push(_loc4_);
+                     vehicleIcon.addEventListener(Event.RENDER, this.onRenderHendle);
+                     this.eventListeners.push(vehicleIcon);
                   }
                }
             }
@@ -369,15 +358,12 @@ package net.ekspoint.battle
       {
          try
          {
-            var _loc2_:BattleAtlasSprite = param1.target as BattleAtlasSprite;
-            if (!_loc2_ || !_loc2_["playerPanelCoreUI"])
-            {
-               return;
-            }
+            var sprite:BattleAtlasSprite = param1.target as BattleAtlasSprite;
+            if (!sprite || !sprite["playerPanelCoreUI"]) return;
             
-            var _loc3_:ColorTransform = _loc2_.transform.colorTransform;
-            _loc3_.color = _loc2_["playerPanelCoreUI"]["color"];
-            _loc2_.transform.colorTransform = _loc3_;
+            var cTransform:ColorTransform = sprite.transform.colorTransform;
+            cTransform.color = sprite["playerPanelCoreUI"]["color"];
+            sprite.transform.colorTransform = cTransform;
          }
          catch (e:Error)
          {
@@ -387,19 +373,17 @@ package net.ekspoint.battle
       
       private function updateComponent(param1:String, param2:Object) : void
       {
-         if (!param2 || !param2.hasOwnProperty("vehicleID"))
-         {
-            return;
-         }
+         if (!param2 || !param2.hasOwnProperty("vehicleID")) return;
          
          try
          {
-            if (!this.textFields[param1].hasOwnProperty(int(param2.vehicleID)))
+            var vehicleId:int = int(param2.vehicleID);
+            if (!this.textFields[param1].hasOwnProperty(vehicleId))
             {
-               this.createPpanelTF(param1, int(param2.vehicleID));
+               this.createPpanelTF(param1, vehicleId);
             }
             
-            var tf:TextField = this.textFields[param1][param2.vehicleID];
+            var tf:TextField = this.textFields[param1][vehicleId];
             if (tf && param2.hasOwnProperty("text"))
             {
                tf.htmlText = param2.text;
@@ -415,42 +399,39 @@ package net.ekspoint.battle
       {
          try
          {
-            var _loc3_:Number = 0;
-            var _loc4_:* = undefined;
-            var _loc5_:Object = null;
-            var _loc6_:Object = null;
-            var _loc7_:Boolean = this.isRightP(param2);
-            var _loc8_:TextField = null;
-            var _loc9_:DropShadowFilter = null;
+            var childIndex:Number = 0;
+            var listItem:* = undefined;
+            var posConfig:Object = null;
+            var shadowConfig:Object = null;
+            var isRight:Boolean = this.isRightP(param2);
+            var tf:TextField = null;
+            var shadow:DropShadowFilter = null;
             
-            _loc4_ = this.as_getPPListItem(int(param2));
-            if (!_loc4_)
-            {
-               return;
-            }
+            listItem = this.as_getPPListItem(int(param2));
+            if (!listItem) return;
             
-            _loc5_ = this.configs[param1][_loc7_ ? "right" : "left"];
-            _loc6_ = this.configs[param1]["shadow"];
+            posConfig = this.configs[param1][isRight ? "right" : "left"];
+            shadowConfig = this.configs[param1]["shadow"];
             
-            _loc8_ = this.getTextFieldFromPool();
+            tf = this.getTextFieldFromPool();
             
-            _loc3_ = Number(_loc4_.getChildIndex(_loc4_[this.configs[param1]["child"]]));
-            _loc4_.addChildAt(_loc8_, _loc3_ + 1);
+            childIndex = Number(listItem.getChildIndex(listItem[this.configs[param1]["child"]]));
+            listItem.addChildAt(tf, childIndex + 1);
 
-            _loc8_.width = _loc5_.width;
-            _loc8_.height = _loc5_.height;
-            _loc8_.autoSize = _loc5_.align;
+            tf.width = posConfig.width;
+            tf.height = posConfig.height;
+            tf.autoSize = posConfig.align;
             
-            _loc9_ = Utils.getDropShadowFilter(
-               _loc6_.distance, _loc6_.angle, _loc6_.color,
-               _loc6_.alpha, _loc6_.size, _loc6_.strength
+            shadow = Utils.getDropShadowFilter(
+               shadowConfig.distance, shadowConfig.angle, shadowConfig.color,
+               shadowConfig.alpha, shadowConfig.size, shadowConfig.strength
             );
-            _loc8_.filters = [_loc9_];
+            tf.filters = [shadow];
             
-            _loc8_.x = _loc4_[this.configs[param1]["holder"]].x + _loc5_.x;
-            _loc8_.y = _loc4_[this.configs[param1]["holder"]].y + _loc5_.y;
+            tf.x = listItem[this.configs[param1]["holder"]].x + posConfig.x;
+            tf.y = listItem[this.configs[param1]["holder"]].y + posConfig.y;
             
-            this.textFields[param1][param2] = _loc8_;
+            this.textFields[param1][param2] = tf;
          }
          catch (e:Error)
          {
@@ -479,9 +460,8 @@ package net.ekspoint.battle
       {
          try
          {
-            for (var i:int = 0; i < this.eventListeners.length; i++)
+            for each (var sprite:BattleAtlasSprite in this.eventListeners)
             {
-               var sprite:BattleAtlasSprite = this.eventListeners[i];
                if (sprite && sprite.hasEventListener(Event.RENDER))
                {
                   sprite.removeEventListener(Event.RENDER, this.onRenderHendle);
@@ -519,9 +499,8 @@ package net.ekspoint.battle
       {
          try
          {
-            for (var i:int = 0; i < this.textFieldPool.length; i++)
+            for each (var tf:TextField in this.textFieldPool)
             {
-               var tf:TextField = this.textFieldPool[i];
                if (tf)
                {
                   tf.filters = null;
