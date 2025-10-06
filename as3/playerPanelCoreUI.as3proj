@@ -6,10 +6,10 @@
     <movie outputType="Application" />
     <movie input="" />
     <movie path="playerPanelCoreUI.swf" />
-    <movie fps="50" />
+    <movie fps="30" />
     <movie width="1024" />
     <movie height="768" />
-    <movie version="28" />
+    <movie version="32" />
     <movie minorVersion="0" />
     <movie platform="Flash Player" />
     <movie background="#ffffff" />
