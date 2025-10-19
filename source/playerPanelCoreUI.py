@@ -130,7 +130,6 @@ class Events(object):
             handleNextMode = PlayersPanel._handleNextMode
             as_setPanelModeS = PlayersPanelMeta.as_setPanelModeS
             _as_setPanelModeS = PlayersPanel.as_setPanelModeS
-            handleShowExtendedInfo = PlayersPanel._PlayersPanel__handleShowExtendedInfo
             _tryToSetPanelModeByMouse = PlayersPanel.tryToSetPanelModeByMouse
             tryToSetPanelModeByMouse = PlayersPanelMeta.tryToSetPanelModeByMouse
             updateVehiclesInfo = BattleStatisticsDataController.updateVehiclesInfo
@@ -141,7 +140,14 @@ class Events(object):
             PlayersPanel.setInitialMode = lambda base_self: self.setInitialMode(setInitialMode, base_self)
             PlayersPanel.setLargeMode = lambda base_self: self.setInitialMode(setLargeMode, base_self)
             PlayersPanel._handleNextMode = lambda base_self, value: self.setPanelMode(handleNextMode, base_self, value)
-            PlayersPanel._PlayersPanel__handleShowExtendedInfo = lambda base_self, value: self.setPanelMode(handleShowExtendedInfo, base_self, value)
+            
+            if hasattr(PlayersPanel, '_PlayersPanel__handleShowExtendedInfo'):
+                handleShowExtendedInfo = PlayersPanel._PlayersPanel__handleShowExtendedInfo
+                PlayersPanel._PlayersPanel__handleShowExtendedInfo = lambda base_self, value: self.setPanelMode(handleShowExtendedInfo, base_self, value)
+                logger.info('[PlayerPanelCore] __handleShowExtendedInfo patched')
+            else:
+                logger.warning('[PlayerPanelCore] __handleShowExtendedInfo not found, skipping patch')
+            
             PlayersPanelMeta.as_setPanelModeS = lambda base_self, value: self.setPanelMode(as_setPanelModeS, base_self, value)
             PlayersPanel.as_setPanelModeS = lambda base_self, value: self.setPanelMode(_as_setPanelModeS, base_self, value)
             PlayersPanel.tryToSetPanelModeByMouse = lambda base_self, value: self.setPanelMode(_tryToSetPanelModeByMouse, base_self, value)
