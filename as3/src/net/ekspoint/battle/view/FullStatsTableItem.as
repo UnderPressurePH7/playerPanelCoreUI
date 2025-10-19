@@ -1,4 +1,4 @@
-package mx.wotlab.gui.battle.views.stats.fullStats
+package net.ekspoint.battle.views.FullStatsTableItem
 {
    import flash.display.MovieClip;
    import mx.wotlab.gui.battle.data.StatisticDataCache;

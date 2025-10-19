@@ -1,4 +1,4 @@
-package mx.wotlab.gui.battle.views.stats.fullStats
+package net.ekspoint.battle.views.FullStatsTableCtrl;
 {
    import net.wg.gui.battle.ranked.stats.components.fullStats.FullStatsTable;
    import net.wg.gui.battle.ranked.stats.components.fullStats.FullStatsTableCtrl;
